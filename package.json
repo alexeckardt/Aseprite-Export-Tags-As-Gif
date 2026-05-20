@@ -2,7 +2,7 @@
     "name": "pixeqla-export-tags",
     "displayName": "Export Tags as GIF",
     "description": "Aseprite extension to export each tag as a separate GIF file.",
-    "version": "0.1.0",
+    "version": "0.1.4",
     "author": {
         "name": "Pixeqla",
         "url": "https://pixeqla.com"

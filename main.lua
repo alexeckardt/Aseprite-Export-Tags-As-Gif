@@ -3,13 +3,13 @@
 function exportTagsAsGifs(exportPath)
     local sprite = app.activeSprite
     if not sprite then return print("No active sprite") end
-
-    local title = sprite.filename:match("(.*[/\\])(.*)%.aseprite")
-    if not title then title = sprite.filename:match("(.*)%.aseprite") end
-    if not title then return print("Save your file first!") end
+    
+    if not sprite.tags or #sprite.tags == 0 then
+        return print("No tags found in sprite")
+    end
 
     for _, tag in ipairs(sprite.tags) do
-        local fn = exportPath .. "/" .. title .. "/" .. tag.name .. ".gif"
+        local fn = exportPath .. tag.name .. ".gif"
         
         -- Create a temporary copy to crop/save specific frames
         local spec = sprite.spec
@@ -42,20 +42,27 @@ function init(plugin)
     plugin:newCommand {
             id = "pixeqla_export_tags_as_gifs",
             title = "Export Tags As GIFs",
-            group = "file_export",
+            group = "file_export_1",
             onclick = function()
                 local sprite = app.activeSprite
                 if not sprite then return print("No active sprite") end
 
                 local defaultPath = sprite.filename:match("(.*[/\\])")
                 if not defaultPath then return print("Save your file first!") end
+                
+                local filename = sprite.filename:match("([^/\\]*)%.aseprite$")
+                if not filename then return print("Save your file first!") end
+                
+                defaultPath = defaultPath .. filename .. "/"
 
                 local dlg = Dialog("Export Tags As GIFs")
 
-                dlg:string {
+                dlg:file {
                     id = "path",
                     label = "Export Path:",
-                    text = defaultPath
+                    title = "Select Export Folder",
+                    open = true,
+                    filename = defaultPath
                 }
 
                 dlg:button { id = "ok", text = "OK" }
